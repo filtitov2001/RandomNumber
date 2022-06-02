@@ -9,6 +9,10 @@
 
 import UIKit
 
+protocol SettingsViewControllerDelegate {
+    func setValues(for randomNumber: RandomNumber)
+}
+
 class MainViewController: UIViewController {
 
     @IBOutlet var minNumberLabel: UILabel!
@@ -18,30 +22,36 @@ class MainViewController: UIViewController {
     
     @IBOutlet var getRandomNumberButton: UIButton!
     
+    private var randomNumber = RandomNumber(minValue: 0, maxValue: 100)
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         getRandomNumberButton.layer.cornerRadius = 10
+        
+        minNumberLabel.text = String(randomNumber.minValue)
+        maxNumberLabel.text = String(randomNumber.maxValue)
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         super.prepare(for: segue, sender: sender)
         guard let settingsVC = segue.destination as? SettingsViewController else {return}
-        settingsVC.minimumValue = minNumberLabel.text
-        settingsVC.maximumValue = maxNumberLabel.text
+        settingsVC.randomNumber = randomNumber
+        settingsVC.delegate = self
     }
 
     @IBAction func getRandomValueButtonPressed() {
-        let minimumValue = Int(minNumberLabel.text ?? "") ?? 0
-        let maximumValue = Int(maxNumberLabel.text ?? "") ?? 0
-        
-        randomValueLabel.text = String(Int.random(in: minimumValue...maximumValue))
+        randomValueLabel.text = String(randomNumber.getRandomNumber())
     }
     
-    @IBAction func unwind(for segue: UIStoryboardSegue) {
-        guard let settingsVC = segue.source as? SettingsViewController else {return}
-        minNumberLabel.text = settingsVC.minValueTF.text
-        maxNumberLabel.text = settingsVC.maxValueTF.text
+}
 
+extension MainViewController: SettingsViewControllerDelegate {
+    func setValues(for randomNumber: RandomNumber) {
+        minNumberLabel.text = String(randomNumber.minValue)
+        maxNumberLabel.text = String(randomNumber.maxValue)
+        
+        self.randomNumber = randomNumber
     }
+    
 }
 
