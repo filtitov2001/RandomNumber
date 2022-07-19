@@ -1,5 +1,6 @@
 # Random Number
-Random number App. My first project for work with protocols and use MVC.<br/>
+Random number App. <br/>
+My first project for work with protocols and using MVC architecture .<br/>
 By tap on button, you can see any number of selected range 🔢
 
 <div align="center">
